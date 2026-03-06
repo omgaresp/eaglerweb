@@ -1,116 +1,100 @@
-<!doctype html>
-<html style="width: 100%; height: 100%; background-color: black">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"
-    />
-    <meta name="description" content="Play minecraft 1.8 in your browser" />
-    <meta
-      name="keywords"
-      content="eaglercraft, eaglercraftx, minecraft, 1.8, 1.8.8"
-    />
-    <title>EaglercraftX 1.8 WASM-GC</title>
-    <meta property="og:locale" content="en-US" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="EaglercraftX 1.8 WASM-GC" />
-    <meta
-      property="og:description"
-      content="Play minecraft 1.8 in your browser"
-    />
-    <meta property="og:image" content="favicon.png" />
-    <link type="image/png" rel="shortcut icon" href="favicon.png" />
-    <script type="text/javascript" src="bootstrap.js"></script>
-    <script type="text/javascript">
-      "use strict";
-      window.addEventListener("load", function () {
-        if (window.location.href.indexOf("file:") === 0) {
-          alert(
-            "HTTP please, do not open this file locally, run a local HTTP server and load it via HTTP",
-          );
-        } else {
-          // %%%%%%%%% launch options %%%%%%%%%%%%
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mirsacraft</title>
+    <style>
+        /* Estilos Base */
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #0b0c10; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        
+        /* Efecto de fondo sutil (Cielo nocturno base) */
+        body::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #1a1b26 0%, #0b0c10 100%); z-index: -1; }
 
-          var relayId = Math.floor(Math.random() * 3);
-          window.eaglercraftXOpts = {
-            demoMode: false,
-            container: "game_frame",
-            assetsURI: "assets.epw",
-            worldsDB: "worlds",
-            servers: [
-              /* example: { addr: "ws://localhost:8081/", name: "Local test server" } */
-            ],
-            relays: [
-              {
-                addr: "wss://relay.deev.is/",
-                comment: "lax1dude relay #1",
-                primary: relayId == 0,
-              },
-              {
-                addr: "wss://relay.lax1dude.net/",
-                comment: "lax1dude relay #2",
-                primary: relayId == 1,
-              },
-              {
-                addr: "wss://relay.shhnowisnottheti.me/",
-                comment: "ayunami relay #1",
-                primary: relayId == 2,
-              },
-            ],
-            iceServers: [
-              {
-                urls: "stun:stun.relay.metered.ca:80",
-              },
-              {
-                urls: "turn:standard.relay.metered.ca:80",
-                username: "09909dd2f57560ce2b7ad5ca",
-                credential: "zIX7huA1sbPgaX77",
-              },
-              {
-                urls: "turn:standard.relay.metered.ca:80?transport=tcp",
-                username: "09909dd2f57560ce2b7ad5ca",
-                credential: "zIX7huA1sbPgaX77",
-              },
-              {
-                urls: "turn:standard.relay.metered.ca:443",
-                username: "09909dd2f57560ce2b7ad5ca",
-                credential: "zIX7huA1sbPgaX77",
-              },
-              {
-                urls: "turns:standard.relay.metered.ca:443?transport=tcp",
-                username: "09909dd2f57560ce2b7ad5ca",
-                credential: "zIX7huA1sbPgaX77",
-              },
-            ],
-          };
+        /* =========================================
+           EFECTO PARALLAX DE ESTRELLAS
+           ========================================= */
+        #stars-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; overflow: hidden; }
+        
+        #stars, #stars2, #stars3 { background: transparent; }
+        
+        /* Capa 1: Estrellas pequeñas y lentas (Fondo lejano) */
+        #stars { width: 1px; height: 1px; box-shadow: var(--shadows-small); animation: animStar 100s linear infinite; }
+        #stars::after { content: " "; position: absolute; top: 2000px; width: 1px; height: 1px; background: transparent; box-shadow: var(--shadows-small); }
+        
+        /* Capa 2: Estrellas medianas (Medio plano) */
+        #stars2 { width: 2px; height: 2px; box-shadow: var(--shadows-medium); animation: animStar 75s linear infinite; }
+        #stars2::after { content: " "; position: absolute; top: 2000px; width: 2px; height: 2px; background: transparent; box-shadow: var(--shadows-medium); }
+        
+        /* Capa 3: Estrellas grandes y rápidas (Primer plano) */
+        #stars3 { width: 3px; height: 3px; box-shadow: var(--shadows-large); animation: animStar 50s linear infinite; }
+        #stars3::after { content: " "; position: absolute; top: 2000px; width: 3px; height: 3px; background: transparent; box-shadow: var(--shadows-large); }
 
-          // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-          var q = window.location.search;
-          if (
-            typeof q === "string" &&
-            q[0] === "?" &&
-            typeof window.URLSearchParams !== "undefined"
-          ) {
-            q = new window.URLSearchParams(q);
-            var s = q.get("server");
-            if (s) window.eaglercraftXOpts.joinServer = s;
-          }
-
-          main();
+        @keyframes animStar {
+            from { transform: translateY(0px); }
+            to { transform: translateY(-2000px); }
         }
-      });
+        /* ========================================= */
+
+        /* Contenedor Principal */
+        .hub-container { text-align: center; max-width: 1200px; padding: 20px; z-index: 1; }
+        
+        /* Logo */
+        .logo { max-width: 700px; width: 90%; height: auto; margin-bottom: 120px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); }
+
+        /* Tarjetas de Selección */
+        .cards-wrapper { display: flex; gap: 50px; justify-content: center; flex-wrap: wrap; }
+        
+        /* Tarjetas */
+        .card { background-color: #15161e; border: 2px solid #2a2b36; border-radius: 24px; padding: 60px 40px; width: 360px; text-decoration: none; color: white; transition: all 0.3s ease; box-shadow: 0 15px 40px rgba(0,0,0,0.4); display: flex; flex-direction: column; align-items: center; }
+        
+        /* Efectos Hover */
+        .card:hover { transform: translateY(-15px); border-color: #4a4b5a; background-color: #1a1b26; }
+        .card.uni:hover { box-shadow: 0 15px 50px rgba(0, 153, 255, 0.25); border-color: #0099ff; }
+        .card.global:hover { box-shadow: 0 15px 50px rgba(255, 183, 0, 0.25); border-color: #ffb700; }
+
+        /* Textos de la tarjeta */
+        .card-title { font-size: 32px; font-weight: bold; margin: 0; letter-spacing: 1px; }
+        
+    </style>
+</head>
+<body>
+
+    <div id="stars-container">
+        <div id="stars"></div>
+        <div id="stars2"></div>
+        <div id="stars3"></div>
+    </div>
+
+    <div class="hub-container">
+        <img src="mirsacraft.png" alt="Mirsacraft Logo" class="logo">
+
+        <div class="cards-wrapper">
+            <a href="universidad.html" class="card uni">
+                <div class="card-title">Modo Universidad</div>
+            </a>
+
+            <a href="global.html" class="card global">
+                <div class="card-title">Modo Global</div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Función matemática para generar cientos de coordenadas de sombras (estrellas)
+        function generateStars(count) {
+            let value = `${Math.random() * 2000}px ${Math.random() * 2000}px #FFF`;
+            for(let i = 2; i <= count; i++) {
+                value += `, ${Math.random() * 2000}px ${Math.random() * 2000}px #FFF`;
+            }
+            return value;
+        }
+
+        // Inyectamos las estrellas en las variables CSS
+        // 700 pequeñas, 200 medianas, 100 grandes
+        document.documentElement.style.setProperty('--shadows-small', generateStars(700));
+        document.documentElement.style.setProperty('--shadows-medium', generateStars(200));
+        document.documentElement.style.setProperty('--shadows-large', generateStars(100));
     </script>
-  </head>
-  <body
-    style="
-      margin: 0px;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: black;
-    "
-    id="game_frame"
-  ></body>
+</body>
 </html>
