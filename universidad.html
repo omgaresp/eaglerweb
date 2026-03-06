@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
-    <meta name="description" content="Play minecraft 1.8 in your browser" />
+    <meta name="description" content="Mirsacraft 1.8.8" />
     <title>Mirsacraft - Universidad</title>
     <link type="image/png" rel="shortcut icon" href="favicon.png" />
     
     <script type="text/javascript" src="bootstrap.js"></script>
 
     <style>
-        /* Estilos Base y Fondo */
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #0b0c10; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; }
         body::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #1a1b26 0%, #0b0c10 100%); z-index: -1; }
 
-        /* Estrellas Parallax */
         #stars-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; overflow: hidden; }
         #stars, #stars2, #stars3 { background: transparent; }
         #stars { width: 1px; height: 1px; box-shadow: var(--shadows-small); animation: animStar 100s linear infinite; }
@@ -25,16 +23,14 @@
         #stars3::after { content: " "; position: absolute; top: 2000px; width: 3px; height: 3px; background: transparent; box-shadow: var(--shadows-large); }
         @keyframes animStar { from { transform: translateY(0px); } to { transform: translateY(-2000px); } }
 
-        /* Interfaz del Launcher */
         #launcher-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 9999; }
-        .launcher-box { background-color: #15161e; border-radius: 24px; padding: 50px 40px; width: 450px; text-align: center; box-shadow: 0 15px 40px rgba(0, 153, 255, 0.15); border: 2px solid #2a2b36; position: relative; z-index: 2; }
+        .launcher-box { background-color: #15161e; border-radius: 24px; padding: 50px 40px; width: 450px; text-align: center; box-shadow: 0 15px 40px rgba(0, 153, 255, 0.15); border: 2px solid #2a2b36; position: relative; z-index: 2; transition: all 0.3s ease; }
         .logo { max-width: 90%; height: auto; margin-bottom: 20px; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5)); }
         
         .mode-badge { display: inline-block; background-color: rgba(0, 153, 255, 0.2); color: #0099ff; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 14px; margin-bottom: 25px; border: 1px solid rgba(0, 153, 255, 0.4); }
         .cache-text { color: #8a8b96; font-size: 14px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .warning-text { color: #b0b1bc; font-size: 13px; margin-bottom: 30px; line-height: 1.5; }
         
-        /* Botones */
         .button-group { display: flex; gap: 15px; margin-bottom: 30px; }
         .btn { flex: 1; padding: 14px 0; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 15px; }
         .btn-redownload { background-color: #2a1f22; color: #ff6b6b; border: 1px solid #4a2a2d; }
@@ -42,10 +38,9 @@
         .btn-launch { background-color: #0099ff; color: white; box-shadow: 0 4px 15px rgba(0, 153, 255, 0.3); }
         .btn-launch:hover { background-color: #007acc; transform: translateY(-2px); }
         
-        /* Barra de Progreso */
-        .progress-container { display: flex; align-items: center; gap: 15px; font-size: 13px; color: #8a8b96; }
-        .progress-bar-bg { flex: 1; height: 6px; background-color: #2a2b36; border-radius: 3px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; background-color: #0099ff; width: 100%; transform-origin: left; transition: width 0.1s linear; }
+        .progress-container { display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 14px; color: #b0b1bc; }
+        .progress-bar-bg { width: 100%; height: 8px; background-color: #2a2b36; border-radius: 4px; overflow: hidden; margin-top: 5px; }
+        .progress-bar-fill { height: 100%; background-color: #0099ff; width: 0%; transition: width 0.2s ease-out; box-shadow: 0 0 10px rgba(0, 153, 255, 0.5); }
     </style>
 </head>
 <body id="game_frame" style="margin: 0px; width: 100%; height: 100%; overflow: hidden; background-color: black;">
@@ -59,21 +54,25 @@
             <img src="mirsacraft.png" alt="Mirsacraft Logo" class="logo">
             <div class="mode-badge">Modo Universidad</div>
             
-            <div class="cache-text">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-                Preparado con caché local
+            <div id="ui-info" style="display: none;">
+                <div class="cache-text">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                    Preparado para lanzar
+                </div>
+                <div class="warning-text">
+                    El juego arrancará usando la versión guardada en tu navegador. Si quieres obtener las últimas actualizaciones, fuerza la descarga.
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-redownload" onclick="startMirsacraft(true)">Forzar Descarga</button>
+                    <button class="btn btn-launch" onclick="startMirsacraft(false)">Iniciar Juego</button>
+                </div>
             </div>
-            <div class="warning-text">
-                Para forzar una actualización y obtener los últimos cambios, presiona Redownload.
-            </div>
-            <div class="button-group">
-                <button class="btn btn-redownload" onclick="startMirsacraft(true)">Redownload</button>
-                <button class="btn btn-launch" onclick="startMirsacraft(false)">Launch Now</button>
-            </div>
+
             <div class="progress-container">
-                <span id="timer-text">Lanzamiento en 15s</span>
+                <span id="timer-text" style="font-weight: bold; color: white;">Verificando recursos...</span>
+                <span id="speed-text" style="font-size: 12px; color: #8a8b96; display: none;">Calculando velocidad...</span>
                 <div class="progress-bar-bg">
-                    <div id="progress-fill" class="progress-bar-fill"></div>
+                    <div id="progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
                 </div>
             </div>
         </div>
@@ -82,7 +81,7 @@
     <script type="text/javascript">
         "use strict";
 
-        // --- Generador de Estrellas ---
+        // Estrellas animadas
         function generateStars(count) {
             let value = `${Math.random() * 2000}px ${Math.random() * 2000}px #FFF`;
             for(let i = 2; i <= count; i++) { value += `, ${Math.random() * 2000}px ${Math.random() * 2000}px #FFF`; }
@@ -92,67 +91,136 @@
         document.documentElement.style.setProperty('--shadows-medium', generateStars(200));
         document.documentElement.style.setProperty('--shadows-large', generateStars(100));
 
-        // --- Lógica del Temporizador ---
         let timeLeft = 15.0;
         const timerText = document.getElementById('timer-text');
+        const speedText = document.getElementById('speed-text');
         const progressFill = document.getElementById('progress-fill');
+        const uiInfo = document.getElementById('ui-info');
         let countdown;
 
         window.addEventListener("load", function () {
             if (window.location.href.indexOf("file:") === 0) {
                 alert("HTTP please, do not open this file locally, run a local HTTP server and load it via HTTP");
             } else {
-                countdown = setInterval(() => {
-                    timeLeft -= 0.1;
-                    timerText.innerText = `Lanzamiento en ${Math.ceil(timeLeft)}s`;
-                    progressFill.style.width = `${(timeLeft / 15) * 100}%`;
-                    if (timeLeft <= 0) {
-                        clearInterval(countdown);
-                        startMirsacraft(false);
-                    }
-                }, 100);
+                // LÓGICA INTELIGENTE DE CACHÉ
+                if (!localStorage.getItem('mirsacraft_cached')) {
+                    // Si nunca ha jugado, iniciamos la descarga inmediatamente
+                    startMirsacraft(false);
+                } else {
+                    // Si ya tiene el juego, mostramos los botones y el temporizador
+                    uiInfo.style.display = 'block';
+                    progressFill.style.width = '100%';
+                    countdown = setInterval(() => {
+                        timeLeft -= 0.1;
+                        timerText.innerText = `Lanzamiento automático en ${Math.ceil(timeLeft)}s`;
+                        progressFill.style.width = `${(timeLeft / 15) * 100}%`;
+                        if (timeLeft <= 0) {
+                            clearInterval(countdown);
+                            startMirsacraft(false);
+                        }
+                    }, 100);
+                }
             }
         });
 
-        // --- Arranque del Motor con tus Opciones ---
         function startMirsacraft(forceRedownload) {
-            clearInterval(countdown); 
+            if(countdown) clearInterval(countdown); 
             
-            document.getElementById('launcher-overlay').style.display = 'none';
-            document.getElementById('stars-container').style.display = 'none';
+            uiInfo.style.display = 'none';
+            speedText.style.display = 'block';
+            progressFill.style.width = '0%';
+            timerText.innerText = "Conectando con el servidor...";
+            speedText.innerText = "Preparando recursos...";
 
-            let finalAssetsURI = forceRedownload ? "assets.epw?nocache=" + new Date().getTime() : "assets.epw";
-            var relayId = Math.floor(Math.random() * 3);
+            let url = forceRedownload ? "assets.epw?nocache=" + new Date().getTime() : "assets.epw";
+            
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.responseType = 'blob';
 
-            window.eaglercraftXOpts = {
-                demoMode: false,
-                container: "game_frame",
-                assetsURI: finalAssetsURI,
-                worldsDB: "worlds",
-                servers: [],
-                relays: [
-                    { addr: "wss://relay.deev.is/", comment: "lax1dude relay #1", primary: relayId == 0 },
-                    { addr: "wss://relay.lax1dude.net/", comment: "lax1dude relay #2", primary: relayId == 1 },
-                    { addr: "wss://relay.shhnowisnottheti.me/", comment: "ayunami relay #1", primary: relayId == 2 }
-                ],
-                iceServers: [
-                    { urls: "stun:stun.relay.metered.ca:80" },
-                    { urls: "turn:standard.relay.metered.ca:80", username: "09909dd2f57560ce2b7ad5ca", credential: "zIX7huA1sbPgaX77" },
-                    { urls: "turn:standard.relay.metered.ca:80?transport=tcp", username: "09909dd2f57560ce2b7ad5ca", credential: "zIX7huA1sbPgaX77" },
-                    { urls: "turn:standard.relay.metered.ca:443", username: "09909dd2f57560ce2b7ad5ca", credential: "zIX7huA1sbPgaX77" },
-                    { urls: "turns:standard.relay.metered.ca:443?transport=tcp", username: "09909dd2f57560ce2b7ad5ca", credential: "zIX7huA1sbPgaX77" }
-                ]
+            let startTime = Date.now();
+            let lastLoaded = 0;
+            let lastTime = startTime;
+
+            xhr.onprogress = function(e) {
+                if (e.lengthComputable) {
+                    let percentComplete = (e.loaded / e.total) * 100;
+                    progressFill.style.width = percentComplete + '%';
+                    
+                    let currentTime = Date.now();
+                    let timeDiff = (currentTime - lastTime) / 1000;
+                    
+                    if(timeDiff >= 0.5) { 
+                        let bytesDiff = e.loaded - lastLoaded;
+                        let speedBps = bytesDiff / timeDiff;
+                        let speedMbps = (speedBps / (1024 * 1024)).toFixed(2);
+                        
+                        let downloadedMB = (e.loaded / (1024 * 1024)).toFixed(2);
+                        let totalMB = (e.total / (1024 * 1024)).toFixed(2);
+                        
+                        timerText.innerText = `Descargando: ${Math.floor(percentComplete)}%`;
+                        speedText.innerText = `${downloadedMB} MB / ${totalMB} MB  —  Velocidad: ${speedMbps} MB/s`;
+                        
+                        lastLoaded = e.loaded;
+                        lastTime = currentTime;
+                    }
+                }
             };
 
-            // Lógica de parámetros URL original
-            var q = window.location.search;
-            if (typeof q === "string" && q[0] === "?" && typeof window.URLSearchParams !== "undefined") {
-                q = new window.URLSearchParams(q);
-                var s = q.get("server");
-                if (s) window.eaglercraftXOpts.joinServer = s;
-            }
+            xhr.onload = function(e) {
+                if (this.status == 200) {
+                    // GUARDAR BANDERA DE CACHÉ
+                    localStorage.setItem('mirsacraft_cached', 'true');
+                    
+                    timerText.innerText = "¡Descarga Completada!";
+                    speedText.innerText = "Iniciando motor de renderizado...";
+                    progressFill.style.width = '100%';
+                    
+                    var blob = new Blob([this.response]);
+                    var blobUrl = URL.createObjectURL(blob);
+                    
+                    setTimeout(function() {
+                        document.getElementById('launcher-overlay').style.display = 'none';
+                        document.getElementById('stars-container').style.display = 'none';
+                        
+                        var relayId = Math.floor(Math.random() * 3);
+                        window.eaglercraftXOpts = {
+                            demoMode: false,
+                            container: "game_frame",
+                            assetsURI: blobUrl,
+                            worldsDB: "worlds",
+                            servers: [],
+                            relays: [
+                                { addr: "wss://relay.deev.is/", comment: "lax1dude relay #1", primary: relayId == 0 },
+                                { addr: "wss://relay.lax1dude.net/", comment: "lax1dude relay #2", primary: relayId == 1 },
+                                { addr: "wss://relay.shhnowisnottheti.me/", comment: "ayunami relay #1", primary: relayId == 2 }
+                            ],
+                            iceServers: [
+                                { urls: "stun:stun.relay.metered.ca:80" },
+                                { urls: "turn:standard.relay.metered.ca:80", username: "09909dd2f57560ce2b7ad5ca", credential: "zIX7huA1sbPgaX77" },
+                                { urls: "turn:standard.relay.metered.ca:80?transport=tcp", username: "09909dd2f57560ce2b7ad5ca", credential: "zIX7huA1sbPgaX77" },
+                                { urls: "turn:standard.relay.metered.ca:443", username: "09909dd2f57560ce2b7ad5ca", credential: "zIX7huA1sbPgaX77" },
+                                { urls: "turns:standard.relay.metered.ca:443?transport=tcp", username: "09909dd2f57560ce2b7ad5ca", credential: "zIX7huA1sbPgaX77" }
+                            ]
+                        };
 
-            main();
+                        var q = window.location.search;
+                        if (typeof q === "string" && q[0] === "?" && typeof window.URLSearchParams !== "undefined") {
+                            q = new window.URLSearchParams(q);
+                            var s = q.get("server");
+                            if (s) window.eaglercraftXOpts.joinServer = s;
+                        }
+
+                        main();
+                    }, 1000);
+                } else {
+                    timerText.innerText = "Error al descargar";
+                    speedText.innerText = "Intenta recargar la página.";
+                    progressFill.style.backgroundColor = "#ff6b6b";
+                }
+            };
+            
+            xhr.send();
         }
     </script>
 </body>
